@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer PRO</title>
+
+    <meta name="description"
+        content="AI-powered resume analyzer with instant scoring, skill gap detection and job matching insights.">
+    <meta name="keywords"
+        content="Resume Analyzer, AI Resume Screening, Resume Scoring, Skill Gap Analysis, Job Matching">
+    <meta name="author" content="Vijay Dholpuria">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
+    <!-- Android -->
+    <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+    <!-- Apple -->
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#203a43">
+
+
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">ResumeAI</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#analyzer">Analyzer</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="reviews.html">Rating</a></li>
+
+        </ul>
+
+    </div>
+    <div id="sidebarOverlay"></div>
+
+    <!-- Mobile Toggle -->
+    <div class="mobile-toggle" id="mobileToggle">☰</div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main>
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <button id="darkToggle">🌙 Dark Mode</button>
+        </div>
+
+        <!-- Background Particles -->
+        <div id="particles-js"></div>
+
+        <!-- ================= HERO ================= -->
+        <section id="home" class="hero">
+
+            <div class="hero-left">
+                <h1><span id="typing"></span></h1>
+                <p>Get instant resume scoring, skill gap analysis & job matching insights.</p>
+                <button onclick="document.getElementById('analyzer').scrollIntoView({behavior:'smooth'})">
+                    Analyze Your Resume
+                </button>
+            </div>
+
+            <div class="floating-card">
+
+                <h3>AI Resume Scan</h3>
+
+                <div class="scan-box">
+
+                    <img src="images/vijay-resume.jpeg" class="scan-image" />
+
+                    <div class="scan-line"></div>
+
+                    <!-- SCORE POP -->
+                    <div class="score-pop">
+                        <div class="score-circle-pop">
+                            <span id="scanScore">0%</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </section>
+        <!-- Compare two resumes side by side with detailed similarity scores, skill matches and gap analysis. -->
+        <section id="about" class="hero2">
+
+            <div class="hero2-container">
+
+                <div class="hero2-left">
+                    <h1><span id="typing2"></span></h1>
+
+                    <p>
+                        Upload two resumes and get a detailed comparison report
+                        with similarity scores, skill matches and more.
+                    </p>
+
+                    <button onclick="goToCompare()">Compare Two Resumes</button>
+                </div>
+
+                <div class="compare-container">
+
+                    <div class="resume-box left-resume">
+                        <img src="images/resume1.jpeg" alt="Resume 1">
+                    </div>
+
+                    <div class="vs-text">VS</div>
+
+                    <div class="resume-box right-resume">
+                        <img src="images/resume2.png" alt="Resume 2">
+                    </div>
+
+                    <!-- Scan Line -->
+                    <div class="compare-scan-line"></div>
+
+                    <!-- Result Popup -->
+                    <div class="compare-result">
+                        <div class="result-card">
+                            <h3>Comparison Result</h3>
+                            <p>Resume 1: 85%</p>
+                            <p>Resume 2: 78%</p>
+                            <p class="winner">Better Match: Resume 1 ✅</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FEATURES ================= -->
+        <section id="about" class="features">
+            <div class="feature-card">
+                <h3>Smart Scoring</h3>
+                <p>Advanced similarity algorithm to match resume with job description.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Skill Gap Detection</h3>
+                <p>Instantly identify missing skills required for the job.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Universal Parser</h3>
+                <p>Supports PDF, DOCX & TXT resumes.</p>
+            </div>
+        </section>
+
+        <!-- ================= ANALYZER ================= -->
+        <section id="analyzer" class="card upload-section">
+            <h2>Upload Resume</h2>
+
+            <div class="upload-box" id="dropArea">
+                <p>Drag & Drop Resume Here</p>
+                <p>or</p>
+                <button type="button" onclick="document.getElementById('resume').click()">
+                    Choose File
+                </button>
+                <h6>Supported formats: PDF, DOCX, TXT</h6>
+                <input type="file" id="resume" hidden>
+                <p id="fileName"></p>
+            </div>
+
+            <textarea id="jobdesc" placeholder="Enter Job Description"></textarea>
+            <button onclick="analyze()">Analyze Resume</button>
+        </section>
+
+        <!-- ================= LOADING OVERLAY ================= -->
+        <div id="loadingOverlay" class="hidden">
+            <div class="loader-container">
+                <div class="spinner"></div>
+                <p id="loadingText">Uploading Resume...</p>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div id="successCheck" class="hidden">✔</div>
+            </div>
+        </div>
+
+        <!-- ================= RESULTS ================= -->
+        <section class="card results-section">
+            <h2>Analysis Result</h2>
+
+            <div class="score-container">
+                <div class="score-box">
+                    <h3>Final Score</h3>
+                    <p id="finalScore">0</p>
+                </div>
+                <div class="score-box">
+                    <h3>Similarity</h3>
+                    <p id="similarityScore">0</p>
+                </div>
+                <div class="score-box">
+                    <h3>Skill Score</h3>
+                    <p id="skillScore">0</p>
+                </div>
+            </div>
+
+            <p class="missing"><b>Missing Skills:</b> <span id="missing"></span></p>
+            <canvas id="scoreChart"></canvas>
+        </section>
+
+        <!-- ================= RANKING ================= -->
+        <section class="results-clean">
+            <h2>Top Ranked Resumes</h2>
+            <ul id="rankList"></ul>
+        </section>
+
+        <!-- ================= STATS ================= -->
+        <section class="stats-section">
+            <div class="stat-box">
+                <h3>Total Resumes</h3>
+                <p id="total">0</p>
+            </div>
+
+            <div class="stat-box">
+                <h3>Average Score</h3>
+                <p id="avg">0</p>
+            </div>
+        </section>
+
+
+        <!-- ================= CONTACT ================= -->
+        <section id="contact" class="card">
+            <h2>Contact Us</h2>
+            <p>Email: vijay635037@gmail.com</p>
+            <p>Phone: +91 7851894027</p>
+        </section>
+
+        <!-- ================= Review ================= -->
+
+        <section class="rating-summary" id="mainRatingSummary">
+
+
+            <h2>User Rating Overview</h2>
+
+            <div class="average-rating">
+                <span id="mainAverageRating">0</span> ⭐
+                (<span id="mainReviewCount">0</span> Reviews)
+            </div>
+
+            <div class="rating-bars">
+
+                <div class="bar-row">
+                    <span>5 ⭐</span>
+                    <div class="bar">
+                        <div class="fill fill-5" id="mainBar5"></div>
+                    </div>
+                    <span id="mainCount5">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>4 ⭐</span>
+                    <div class="bar">
+                        <div class="fill fill-4" id="mainBar4"></div>
+                    </div>
+                    <span id="mainCount4">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>3 ⭐</span>
+                    <div class="bar">
+                        <div class="fill fill-3" id="mainBar3"></div>
+                    </div>
+                    <span id="mainCount3">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>2 ⭐</span>
+                    <div class="bar">
+                        <div class="fill fill-2" id="mainBar2"></div>
+                    </div>
+                    <span id="mainCount2">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>1 ⭐</span>
+                    <div class="bar">
+                        <div class="fill fill-1" id="mainBar1"></div>
+                    </div>
+                    <span id="mainCount1">0</span>
+                </div>
+
+            </div>
+
+            <button onclick="window.location.href='reviews.html'">
+                ⭐ Rate & Review Us
+            </button>
+
+        </section>
+
+
+        <!-- ================= FAQ SECTION ================= -->
+        <section id="faq" class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">What is a resume checker?</div>
+                <div class="faq-answer">
+                    A resume checker evaluates and improves resumes by checking formatting,
+                    ATS keywords, grammar errors, and content relevance.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do I check my resume score?</div>
+                <div class="faq-answer">
+                    Upload your resume and job description into Resume Analyzer PRO.
+                    Our AI system instantly calculates your resume score.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do I improve my resume score?</div>
+                <div class="faq-answer">
+                    Improve missing skills, match keywords with job description,
+                    and ensure proper formatting for ATS compliance.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How do I know my resume is ATS compliant?</div>
+                <div class="faq-answer">
+                    Ensure your resume uses simple formatting, relevant keywords,
+                    and avoids images or complex layouts.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What is a good ATS score?</div>
+                <div class="faq-answer">
+                    A score above 70% is generally considered competitive for most roles.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can an ATS read PDFs?</div>
+                <div class="faq-answer">
+                    Yes, most modern ATS systems can read text-based PDFs,
+                    but avoid scanned image PDFs.
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PREMIUM FOOTER ================= -->
+        <footer class="footer-pro">
+
+            <div class="footer-grid">
+
+                <div>
+                    <h3>Resume Analyzer PRO</h3>
+                    <p>AI powered resume screening & ATS optimization platform.</p>
+                </div>
+
+                <div>
+                    <h3>Connect With Me</h3>
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/in/vijaykumardholpuria" target="_blank"
+                            class="social-icon linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+
+                        <a href="https://github.com/vijaydholpuria" target="_blank" class="social-icon github">
+                            <i class="fab fa-github"></i>
+                        </a>
+
+                        <a href="https://vijaydholpuria.github.io/vijay-portfolio/" target="_blank"
+                            class="social-icon portfolio">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Resume Analyzer PRO | Developed by Vijay Dholpuria
+            </div>
+
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
