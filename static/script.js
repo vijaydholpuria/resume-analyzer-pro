@@ -15,6 +15,7 @@ const API = resolveApiBase();
 let chart;
 let selectedResumeFile = null;
 let isAnalyzing = false;
+const THEME_STORAGE_KEY = "resume_theme_mode";
 
 const HIRING_TRENDS_2026 = [
     "AI Agents",
@@ -204,12 +205,24 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const darkBtn = document.getElementById("darkToggle");
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+    } else if (savedTheme === "light") {
+        document.body.classList.remove("dark");
+    }
+
     if (darkBtn) {
+        darkBtn.textContent = document.body.classList.contains("dark")
+            ? "Switch to Classic Light"
+            : "Classic Night Mode";
+
         darkBtn.addEventListener("click", () => {
             document.body.classList.toggle("dark");
-            darkBtn.textContent = document.body.classList.contains("dark")
-                ? "Switch to Classic Light"
-                : "Classic Night Mode";
+            const isDark = document.body.classList.contains("dark");
+            darkBtn.textContent = isDark ? "Switch to Classic Light" : "Classic Night Mode";
+            localStorage.setItem(THEME_STORAGE_KEY, isDark ? "dark" : "light");
         });
     }
 
