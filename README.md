@@ -79,3 +79,18 @@ localStorage.setItem("resume_api_base_url", "https://your-backend-domain.com")
 Notes:
 - Keep `sslmode=require` in Supabase connection string.
 - For deployed frontend, set `CORS_ORIGINS` to your frontend domain instead of `*`.
+
+## Render Deployment
+1. Push this repo to GitHub (already done by you).
+2. In Render, click `New +` -> `Blueprint`.
+3. Select this repo. Render will auto-detect `render.yaml`.
+4. In service env vars, set:
+   - `DATABASE_URL` = your Supabase Postgres URI
+   - `CORS_ORIGINS` = your frontend deployed domain (for example `https://your-frontend.netlify.app`)
+5. Deploy and wait for build success.
+6. Test:
+   - `/health` should return `{"ok": true, ...}`
+   - `/` should open homepage.
+
+Start command used by Render:
+- `gunicorn wsgi:app --bind 0.0.0.0:$PORT`
