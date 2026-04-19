@@ -338,6 +338,13 @@ def health():
     return jsonify({"ok": True, "service": "resume-analyzer-api"})
 
 
+@app.get("/google<string:token>.html")
+def google_site_verification(token: str):
+    filename = f"google{token}.html"
+    if not (Path(app.root_path) / filename).exists():
+        return "Not Found", 404
+    return send_from_directory(app.root_path, filename)
+
 
 @app.get("/")
 def home_page():
