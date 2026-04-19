@@ -14,6 +14,7 @@
 const API = resolveApiBase();
 let chart;
 let selectedResumeFile = null;
+let isAnalyzing = false;
 
 const HIRING_TRENDS_2026 = [
     "AI Agents",
@@ -33,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const progress = document.getElementById("progress");
     const loadingText = document.getElementById("loadingText");
     const successCheck = document.getElementById("successCheck");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const chooseFileBtn = document.getElementById("chooseFileBtn");
     const sidebar = document.getElementById("sidebar");
     const mobileToggle = document.getElementById("mobileToggle");
     const sidebarOverlay = document.getElementById("sidebarOverlay");
@@ -48,7 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTrendTags([]);
 
     if (dropArea) {
-        dropArea.addEventListener("click", () => fileInput.click());
+        dropArea.addEventListener("click", (event) => {
+            if (event.target.closest("button") || event.target.closest("input")) {
+                return;
+            }
+            fileInput.click();
+        });
 
         fileInput.addEventListener("change", () => {
             if (fileInput.files.length > 0) {
@@ -83,7 +91,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    if (chooseFileBtn) {
+        chooseFileBtn.addEventListener("click", () => fileInput.click());
+    }
+
     window.analyze = function () {
+
+        if (isAnalyzing) {
+            return;
+        }
 
         const file = selectedResumeFile || (fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null);
         const jobDesc = document.getElementById("jobdesc").value;
@@ -93,10 +109,22 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        isAnalyzing = true;
+        if (analyzeBtn) {
+            analyzeBtn.disabled = true;
+        }
+
         overlay.style.display = "flex";
         progress.style.width = "0%";
         successCheck.style.display = "none";
         loadingText.innerText = "Uploading Resume...";
+
+        const finishAnalyze = () => {
+            isAnalyzing = false;
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+            }
+        };
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", API + "/analyze");
@@ -116,7 +144,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (xhr.status !== 200) {
                 overlay.style.display = "none";
-                alert("Server Error!");
+                let errorMessage = "Server Error!";
+                try {
+                    const errorPayload = JSON.parse(xhr.responseText || "{}");
+                    if (errorPayload.error) {
+                        errorMessage = errorPayload.error;
+                    }
+                } catch (_error) {
+                    // Ignore parse errors and show fallback message.
+                }
+                alert(errorMessage);
+                finishAnalyze();
                 return;
             }
 
@@ -124,7 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             setTimeout(() => {
 
-                const data = JSON.parse(xhr.responseText);
+                let data;
+                try {
+                    data = JSON.parse(xhr.responseText);
+                } catch (_error) {
+                    overlay.style.display = "none";
+                    alert("Invalid server response. Please try again.");
+                    finishAnalyze();
+                    return;
+                }
 
                 document.getElementById("finalScore").innerText = data.finalScore;
                 document.getElementById("similarityScore").innerText = data.similarityScore;
@@ -142,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     drawChart(data.finalScore);
                     loadRank();
                     loadStats();
+                    finishAnalyze();
                 }, 900);
 
             }, 650);
@@ -150,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xhr.onerror = function () {
             overlay.style.display = "none";
             alert("Network error. Please try again.");
+            finishAnalyze();
         };
 
         xhr.send(file);
@@ -378,48 +426,90 @@ function updateCareerCopilot(data, jobDesc) {
 }
 
 function loadReviewCount() {
-    const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
-    const countElement = document.getElementById("reviewCount");
-    if (countElement) {
-        countElement.innerText = reviews.length;
-    }
+    fetch(API + "/getReviews", { cache: "no-store" })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Unable to fetch reviews.");
+            }
+            return response.json();
+        })
+        .then((reviews) => {
+            const countElement = document.getElementById("reviewCount");
+            if (countElement && Array.isArray(reviews)) {
+                countElement.innerText = reviews.length;
+            }
+        })
+        .catch(() => {
+            const countElement = document.getElementById("reviewCount");
+            if (countElement) {
+                countElement.innerText = "0";
+            }
+        });
 }
 
 function loadMainRatingSummary() {
+    fetch(API + "/getReviews", { cache: "no-store" })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Unable to fetch reviews.");
+            }
+            return response.json();
+        })
+        .then((reviews) => {
+            if (!Array.isArray(reviews)) {
+                throw new Error("Unexpected reviews payload.");
+            }
 
-    const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
-    const ratingCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    let totalStars = 0;
+            const ratingCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            let totalStars = 0;
 
-    reviews.forEach((r) => {
-        ratingCount[r.rating]++;
-        totalStars += parseInt(r.rating, 10);
-    });
+            reviews.forEach((review) => {
+                const rating = Number(review.rating);
+                if (rating >= 1 && rating <= 5) {
+                    ratingCount[rating]++;
+                    totalStars += rating;
+                }
+            });
 
-    const avg = reviews.length ? (totalStars / reviews.length).toFixed(1) : 0;
+            const avg = reviews.length ? (totalStars / reviews.length).toFixed(1) : 0;
 
-    if (document.getElementById("mainAverageRating")) {
-        document.getElementById("mainAverageRating").innerText = avg;
-    }
+            if (document.getElementById("mainAverageRating")) {
+                document.getElementById("mainAverageRating").innerText = avg;
+            }
 
-    if (document.getElementById("mainReviewCount")) {
-        document.getElementById("mainReviewCount").innerText = reviews.length;
-    }
+            if (document.getElementById("mainReviewCount")) {
+                document.getElementById("mainReviewCount").innerText = reviews.length;
+            }
 
-    for (let i = 1; i <= 5; i++) {
-        const percent = reviews.length ? (ratingCount[i] / reviews.length) * 100 : 0;
+            for (let i = 1; i <= 5; i++) {
+                const percent = reviews.length ? (ratingCount[i] / reviews.length) * 100 : 0;
 
-        if (document.getElementById("mainBar" + i)) {
-            document.getElementById("mainBar" + i).style.width = percent + "%";
-        }
+                if (document.getElementById("mainBar" + i)) {
+                    document.getElementById("mainBar" + i).style.width = percent + "%";
+                }
 
-        if (document.getElementById("mainCount" + i)) {
-            document.getElementById("mainCount" + i).innerText = ratingCount[i];
-        }
-    }
+                if (document.getElementById("mainCount" + i)) {
+                    document.getElementById("mainCount" + i).innerText = ratingCount[i];
+                }
+            }
+        })
+        .catch(() => {
+            if (document.getElementById("mainAverageRating")) {
+                document.getElementById("mainAverageRating").innerText = "0";
+            }
+            if (document.getElementById("mainReviewCount")) {
+                document.getElementById("mainReviewCount").innerText = "0";
+            }
+            for (let i = 1; i <= 5; i++) {
+                if (document.getElementById("mainBar" + i)) {
+                    document.getElementById("mainBar" + i).style.width = "0%";
+                }
+                if (document.getElementById("mainCount" + i)) {
+                    document.getElementById("mainCount" + i).innerText = "0";
+                }
+            }
+        });
 }
-
-window.addEventListener("storage", loadMainRatingSummary);
 
 window.addEventListener("load", function () {
 
@@ -466,5 +556,5 @@ window.addEventListener("load", function () {
 });
 
 function goToCompare() {
-    window.location.href = "compare.html";
+    window.location.href = "/compare";
 }

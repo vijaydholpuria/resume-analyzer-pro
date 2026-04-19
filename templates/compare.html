@@ -12,13 +12,13 @@
         content="Resume Compare, ATS Comparison, Resume Analyzer, Skill Match">
     <meta name="author" content="Vijay Dholpuria">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ asset_url('style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="{{ asset_url('images/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset_url('images/android-chrome-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset_url('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset_url('images/apple-touch-icon.png') }}">
     <meta name="theme-color" content="#12202f">
 </head>
 
@@ -27,11 +27,11 @@
     <div class="sidebar" id="sidebar">
         <div class="logo">ResumeAI</div>
         <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#analyzer">Analyzer</a></li>
-            <li><a href="compare.html">Compare</a></li>
-            <li><a href="reviews.html">Ratings</a></li>
+            <li><a href="{{ url_for('index_page') }}">Home</a></li>
+            <li><a href="{{ url_for('index_page') }}#about">About</a></li>
+            <li><a href="{{ url_for('index_page') }}#analyzer">Analyzer</a></li>
+            <li><a href="{{ url_for('compare_page') }}">Compare</a></li>
+            <li><a href="{{ url_for('reviews_page') }}">Ratings</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </div>
@@ -55,13 +55,13 @@
 
                 <div class="compare-container">
                     <div class="resume-box left-resume">
-                        <img src="images/resume1.jpeg" alt="Resume 1">
+                        <img src="{{ asset_url('images/resume1.jpeg') }}" alt="Resume 1">
                     </div>
 
                     <div class="vs-text">VS</div>
 
                     <div class="resume-box right-resume">
-                        <img src="images/resume2.png" alt="Resume 2">
+                        <img src="{{ asset_url('images/resume2.png') }}" alt="Resume 2">
                     </div>
 
                     <div class="compare-scan-line"></div>
@@ -160,7 +160,7 @@
 
     </main>
 
-    <script src="{{ url_for('static', filename='compare.js') }}"></script>
+    <script src="{{ asset_url('compare.js') }}"></script>
 
 </body>
 

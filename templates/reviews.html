@@ -12,7 +12,7 @@
         content="Resume Analyzer Reviews, User Rating, ATS Tool Review">
     <meta name="author" content="Vijay Dholpuria">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ asset_url('style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -24,7 +24,7 @@
             <li><a href="#home">Home</a></li>
             <li><a href="#allreviews">All Reviews</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="index.html">Main Site</a></li>
+            <li><a href="{{ url_for('index_page') }}">Main Site</a></li>
         </ul>
     </div>
 
@@ -129,7 +129,7 @@
                 intelligent matching with job descriptions.
             </p>
 
-            <button onclick="window.location.href='index.html'">
+            <button onclick="window.location.href='{{ url_for('index_page') }}'">
                 Visit Main Site
             </button>
         </section>
@@ -164,7 +164,7 @@
 
     </main>
 
-    <script src="{{ url_for('static', filename='reviews.js') }}"></script>
+    <script src="{{ asset_url('reviews.js') }}"></script>
 
 </body>
 

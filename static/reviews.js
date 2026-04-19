@@ -53,10 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     submitBtn.addEventListener("click", submitReview);
 
-    function submitReview() {
+    async function submitReview() {
 
         if (isSubmitting) return;
         isSubmitting = true;
+        submitBtn.disabled = true;
 
         const name = document.getElementById("reviewName").value.trim();
         const comment = document.getElementById("reviewComment").value.trim();
@@ -65,83 +66,123 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!name || !comment || rating == 0) {
             alert("Please select rating and fill all fields");
             isSubmitting = false;
+            submitBtn.disabled = false;
             return;
         }
 
-        fetch(API + "/addReview", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: `name=${encodeURIComponent(name)}&rating=${rating}&comment=${encodeURIComponent(comment)}`
-        })
-            .then(res => res.text())
-            .then(() => {
-
-                document.getElementById("reviewName").value = "";
-                document.getElementById("reviewComment").value = "";
-                ratingInput.value = 0;
-                highlightStars(0);
-
-                loadReviews();
-                isSubmitting = false;
-
-            })
-            .catch(() => {
-                alert("Error submitting review");
-                isSubmitting = false;
+        try {
+            const response = await fetch(API + "/addReview", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `name=${encodeURIComponent(name)}&rating=${rating}&comment=${encodeURIComponent(comment)}`
             });
+
+            const message = (await response.text()).trim();
+            if (!response.ok) {
+                throw new Error(message || "Error submitting review");
+            }
+
+            document.getElementById("reviewName").value = "";
+            document.getElementById("reviewComment").value = "";
+            ratingInput.value = 0;
+            highlightStars(0);
+
+            await loadReviews();
+        } catch (error) {
+            alert(error.message || "Error submitting review");
+        } finally {
+            isSubmitting = false;
+            submitBtn.disabled = false;
+        }
     }
 
     /* ================= LOAD REVIEWS ================= */
 
-    function loadReviews() {
+    async function loadReviews() {
+        const container = document.getElementById("reviewList");
 
-        fetch(API + "/getReviews")
-            .then(res => res.json())
-            .then(reviews => {
+        try {
+            const response = await fetch(API + "/getReviews", { cache: "no-store" });
+            if (!response.ok) {
+                const errorText = (await response.text()).trim();
+                throw new Error(errorText || "Failed to load reviews");
+            }
 
-                const container = document.getElementById("reviewList");
-                container.innerHTML = "";
+            const reviews = await response.json();
+            if (!Array.isArray(reviews)) {
+                throw new Error("Unexpected review response");
+            }
 
-                let ratingCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-                let totalStars = 0;
+            container.innerHTML = "";
 
-                reviews.forEach(r => {
-                    ratingCount[r.rating]++;
-                    totalStars += parseInt(r.rating);
-                });
+            const ratingCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            let totalStars = 0;
 
-                const avg = reviews.length
-                    ? (totalStars / reviews.length).toFixed(1)
+            reviews.forEach(review => {
+                const rating = Number(review.rating);
+                if (rating >= 1 && rating <= 5) {
+                    ratingCount[rating]++;
+                    totalStars += rating;
+                }
+            });
+
+            const avg = reviews.length
+                ? (totalStars / reviews.length).toFixed(1)
+                : 0;
+
+            document.getElementById("averageRating").innerText = avg;
+
+            for (let i = 1; i <= 5; i++) {
+
+                const percent = reviews.length
+                    ? (ratingCount[i] / reviews.length) * 100
                     : 0;
 
-                document.getElementById("averageRating").innerText = avg;
+                const bar = document.getElementById("bar" + i);
+                const count = document.getElementById("count" + i);
 
-                for (let i = 1; i <= 5; i++) {
+                if (bar) bar.style.width = percent + "%";
+                if (count) count.innerText = ratingCount[i];
+            }
 
-                    let percent = reviews.length
-                        ? (ratingCount[i] / reviews.length) * 100
-                        : 0;
-
-                    const bar = document.getElementById("bar" + i);
-                    const count = document.getElementById("count" + i);
-
-                    if (bar) bar.style.width = percent + "%";
-                    if (count) count.innerText = ratingCount[i];
-                }
-
-                reviews.forEach(r => {
-                    container.innerHTML += `
+            if (reviews.length === 0) {
+                container.innerHTML = `
                     <div class="review-card">
-                        <h4>${r.name}</h4>
-                        <p>${"\u2B50".repeat(r.rating)}</p>
-                        <p>${r.comment}</p>
+                        <h4>No reviews yet</h4>
+                        <p>Be the first to share your feedback.</p>
                     </div>
                 `;
-                });
+                return;
+            }
 
+            reviews.forEach(review => {
+                const safeRating = Math.max(1, Math.min(5, Number(review.rating || 0)));
+                container.innerHTML += `
+                    <div class="review-card">
+                        <h4>${review.name}</h4>
+                        <p>${"\u2B50".repeat(safeRating)}</p>
+                        <p>${review.comment}</p>
+                    </div>
+                `;
             });
+        } catch (error) {
+            container.innerHTML = `
+                <div class="review-card">
+                    <h4>Unable to load reviews</h4>
+                    <p>${error.message || "Please try again shortly."}</p>
+                </div>
+            `;
+
+            document.getElementById("averageRating").innerText = "0";
+            for (let i = 1; i <= 5; i++) {
+                const bar = document.getElementById("bar" + i);
+                const count = document.getElementById("count" + i);
+                if (bar) bar.style.width = "0%";
+                if (count) count.innerText = "0";
+            }
+        }
     }
 
     loadReviews();

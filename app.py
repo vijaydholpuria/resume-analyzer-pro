@@ -8,7 +8,7 @@ from pathlib import Path
 
 from docx import Document
 from dotenv import load_dotenv
-from flask import Flask, jsonify, make_response, render_template, request, send_from_directory
+from flask import Flask, jsonify, make_response, render_template, request, send_from_directory, url_for
 from flask_cors import CORS
 from pypdf import PdfReader
 from reportlab.lib.pagesizes import A4
@@ -157,6 +157,28 @@ except SQLAlchemyError as exc:
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
 CORS(app, resources={r"/*": {"origins": CORS_ORIGINS}})
+
+
+def static_asset_version(filename: str) -> int:
+    static_path = Path(app.static_folder or "") / filename
+    if static_path.exists():
+        return int(static_path.stat().st_mtime)
+    return int(datetime.utcnow().timestamp())
+
+
+@app.context_processor
+def inject_asset_url():
+    def asset_url(filename: str) -> str:
+        return url_for("static", filename=filename, v=static_asset_version(filename))
+
+    return {"asset_url": asset_url}
+
+
+@app.after_request
+def apply_html_cache_headers(response):
+    if response.mimetype == "text/html":
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+    return response
 
 
 def sanitize_username(raw_username: str) -> str:
