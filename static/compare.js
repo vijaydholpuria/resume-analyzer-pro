@@ -1,4 +1,17 @@
-const API = "http://localhost:8080";
+function resolveApiBase() {
+    const override = window.RESUME_API_BASE_URL || localStorage.getItem("resume_api_base_url");
+    if (override) {
+        return override.replace(/\/+$/, "");
+    }
+
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        return "http://localhost:8080";
+    }
+
+    return window.location.origin.replace(/\/+$/, "");
+}
+
+const API = resolveApiBase();
 
 let lastComparisonData = null;
 
@@ -73,19 +86,28 @@ const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("sidebarOverlay");
 const toggle = document.getElementById("mobileToggle");
 
-toggle.addEventListener("click", () => {
-    sidebar.classList.toggle("active");
-    overlay.classList.toggle("active");
-});
+function setSidebarState(isOpen) {
+    if (!sidebar || !overlay) return;
+    sidebar.classList.toggle("active", isOpen);
+    overlay.classList.toggle("active", isOpen);
+    document.body.style.overflow = isOpen ? "hidden" : "";
+}
 
-overlay.addEventListener("click", () => {
-    sidebar.classList.remove("active");
-    overlay.classList.remove("active");
-});
+if (toggle && sidebar && overlay) {
+    toggle.addEventListener("click", () => {
+        setSidebarState(!sidebar.classList.contains("active"));
+    });
+}
+
+if (overlay) {
+    overlay.addEventListener("click", () => {
+        setSidebarState(false);
+    });
+}
 
 document.querySelectorAll(".sidebar a").forEach(link => {
     link.addEventListener("click", () => {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
+        setSidebarState(false);
     });
 });
+

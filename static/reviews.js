@@ -1,3 +1,17 @@
+function resolveApiBase() {
+    const override = window.RESUME_API_BASE_URL || localStorage.getItem("resume_api_base_url");
+    if (override) {
+        return override.replace(/\/+$/, "");
+    }
+
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        return "http://localhost:8080";
+    }
+
+    return window.location.origin.replace(/\/+$/, "");
+}
+
+const API = resolveApiBase();
 document.addEventListener("DOMContentLoaded", () => {
 
     const stars = document.querySelectorAll(".star");
@@ -54,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("http://localhost:8080/addReview", {
+        fetch(API + "/addReview", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -83,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function loadReviews() {
 
-        fetch("http://localhost:8080/getReviews")
+        fetch(API + "/getReviews")
             .then(res => res.json())
             .then(reviews => {
 
@@ -121,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     container.innerHTML += `
                     <div class="review-card">
                         <h4>${r.name}</h4>
-                        <p>${"⭐".repeat(r.rating)}</p>
+                        <p>${"\u2B50".repeat(r.rating)}</p>
                         <p>${r.comment}</p>
                     </div>
                 `;
@@ -137,19 +151,27 @@ const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("sidebarOverlay");
 const toggle = document.getElementById("mobileToggle");
 
-toggle.addEventListener("click", () => {
-    sidebar.classList.toggle("active");
-    overlay.classList.toggle("active");
-});
+function setSidebarState(isOpen) {
+    if (!sidebar || !overlay) return;
+    sidebar.classList.toggle("active", isOpen);
+    overlay.classList.toggle("active", isOpen);
+    document.body.style.overflow = isOpen ? "hidden" : "";
+}
 
-overlay.addEventListener("click", () => {
-    sidebar.classList.remove("active");
-    overlay.classList.remove("active");
-});
+if (toggle && sidebar && overlay) {
+    toggle.addEventListener("click", () => {
+        setSidebarState(!sidebar.classList.contains("active"));
+    });
+}
+
+if (overlay) {
+    overlay.addEventListener("click", () => {
+        setSidebarState(false);
+    });
+}
 
 document.querySelectorAll(".sidebar a").forEach(link => {
     link.addEventListener("click", () => {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
+        setSidebarState(false);
     });
 });

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Resumes | Resume Analyzer PRO</title>
+
+    <meta name="description"
+        content="Compare two resumes instantly with AI-driven scoring, skill coverage and summary insights.">
+    <meta name="keywords"
+        content="Resume Compare, ATS Comparison, Resume Analyzer, Skill Match">
+    <meta name="author" content="Vijay Dholpuria">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <meta name="theme-color" content="#12202f">
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="logo">ResumeAI</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#analyzer">Analyzer</a></li>
+            <li><a href="compare.html">Compare</a></li>
+            <li><a href="reviews.html">Ratings</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <div id="sidebarOverlay"></div>
+    <div class="mobile-toggle" id="mobileToggle">&#9776;</div>
+
+    <main>
+
+        <section class="hero2" id="about">
+            <div class="hero2-container">
+                <div class="hero2-left">
+                    <h1><span id="typing2"></span></h1>
+                    <h1>Compare Resumes with Precision</h1>
+
+                    <p>
+                        Upload two resumes and view a side-by-side quality check for word depth,
+                        skill signals, and overall match score.
+                    </p>
+                </div>
+
+                <div class="compare-container">
+                    <div class="resume-box left-resume">
+                        <img src="images/resume1.jpeg" alt="Resume 1">
+                    </div>
+
+                    <div class="vs-text">VS</div>
+
+                    <div class="resume-box right-resume">
+                        <img src="images/resume2.png" alt="Resume 2">
+                    </div>
+
+                    <div class="compare-scan-line"></div>
+
+                    <div class="compare-result">
+                        <div class="result-card">
+                            <h3>Comparison Result</h3>
+                            <p>Resume 1: 85%</p>
+                            <p>Resume 2: 78%</p>
+                            <p class="winner">Better Match: Resume 1</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top:20px;">
+
+            <h2>Compare Two Resumes</h2>
+
+            <div class="compare-form-grid">
+                <input type="file" id="resume1" accept=".pdf,.doc,.docx,.txt">
+                <input type="file" id="resume2" accept=".pdf,.doc,.docx,.txt">
+            </div>
+
+            <button onclick="compareResumes()">Compare</button>
+
+        </section>
+
+        <section id="comparisonResult" class="card" style="display:none;">
+
+            <h2>Comparison Result</h2>
+
+            <table id="compareTable">
+                <tr>
+                    <th>Feature</th>
+                    <th id="name1"></th>
+                    <th id="name2"></th>
+                </tr>
+
+                <tr>
+                    <td>Word Count</td>
+                    <td id="wc1"></td>
+                    <td id="wc2"></td>
+                </tr>
+
+                <tr>
+                    <td>Skills Matched</td>
+                    <td id="skill1"></td>
+                    <td id="skill2"></td>
+                </tr>
+
+                <tr>
+                    <td>Similarity Score</td>
+                    <td id="score1"></td>
+                    <td id="score2"></td>
+                </tr>
+
+            </table>
+
+            <br>
+
+            <button onclick="downloadReport()">Download PDF Report</button>
+
+        </section>
+
+        <footer class="footer-pro" id="contact">
+
+            <div class="footer-grid">
+                <div>
+                    <h3>Connect With Me</h3>
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/in/vijaykumardholpuria" target="_blank"
+                            class="social-icon linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+
+                        <a href="https://github.com/vijaydholpuria" target="_blank" class="social-icon github">
+                            <i class="fab fa-github"></i>
+                        </a>
+
+                        <a href="https://vijaydholpuria.github.io/vijay-portfolio/" target="_blank"
+                            class="social-icon portfolio">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                &copy; 2026 Resume Analyzer PRO | Developed by Vijay Dholpuria
+            </div>
+        </footer>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='compare.js') }}"></script>
+
+</body>
+
+</html>

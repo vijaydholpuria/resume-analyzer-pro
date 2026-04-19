@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews | Resume Analyzer PRO</title>
+
+    <meta name="description"
+        content="Read and share user feedback for Resume Analyzer PRO.">
+    <meta name="keywords"
+        content="Resume Analyzer Reviews, User Rating, ATS Tool Review">
+    <meta name="author" content="Vijay Dholpuria">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="logo">ResumeAI</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#allreviews">All Reviews</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="index.html">Main Site</a></li>
+        </ul>
+    </div>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="mobile-toggle" id="mobileToggle">&#9776;</div>
+
+    <main>
+        <section class="review-hero" id="home">
+            <h1>User Reviews & Ratings</h1>
+            <p>Share your experience with Resume Analyzer PRO</p>
+        </section>
+
+        <section class="review-form-section" id="analyzer">
+            <h2>Leave a Review</h2>
+
+            <input type="text" id="reviewName" placeholder="Your Name">
+
+            <div class="star-rating" id="starRating">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+
+            <input type="hidden" id="reviewRating" value="0">
+
+            <textarea id="reviewComment" placeholder="Write your comment..."></textarea>
+
+            <button id="submitReviewBtn">Submit Review</button>
+        </section>
+
+        <section class="rating-summary" id="ratings">
+            <h2>Overall Rating</h2>
+
+            <div class="average-rating">
+                <span id="averageRating">0</span> &#11088;
+            </div>
+
+            <div class="rating-bars">
+
+                <div class="bar-row">
+                    <span>5 &#11088;</span>
+                    <div class="bar">
+                        <div class="fill fill-5" id="bar5"></div>
+                    </div>
+                    <span id="count5">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>4 &#11088;</span>
+                    <div class="bar">
+                        <div class="fill fill-4" id="bar4"></div>
+                    </div>
+                    <span id="count4">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>3 &#11088;</span>
+                    <div class="bar">
+                        <div class="fill fill-3" id="bar3"></div>
+                    </div>
+                    <span id="count3">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>2 &#11088;</span>
+                    <div class="bar">
+                        <div class="fill fill-2" id="bar2"></div>
+                    </div>
+                    <span id="count2">0</span>
+                </div>
+
+                <div class="bar-row">
+                    <span>1 &#11088;</span>
+                    <div class="bar">
+                        <div class="fill fill-1" id="bar1"></div>
+                    </div>
+                    <span id="count1">0</span>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="review-list-section" id="allreviews">
+            <h2>All Reviews</h2>
+            <div id="reviewList"></div>
+        </section>
+
+        <section class="about-review-site" id="about">
+            <h2>About Resume Analyzer PRO</h2>
+
+            <p>
+                Resume Analyzer PRO is an AI-powered resume screening platform designed to help
+                job seekers improve their resumes using similarity scoring, skill gap detection,
+                and ATS optimization.
+            </p>
+
+            <p>
+                Our goal is to simplify job preparation by providing instant feedback and
+                intelligent matching with job descriptions.
+            </p>
+
+            <button onclick="window.location.href='index.html'">
+                Visit Main Site
+            </button>
+        </section>
+
+        <footer class="footer-pro" id="contact">
+
+            <div class="footer-grid">
+                <div>
+                    <h3>Connect With Me</h3>
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/in/vijaykumardholpuria" target="_blank"
+                            class="social-icon linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+
+                        <a href="https://github.com/vijaydholpuria" target="_blank" class="social-icon github">
+                            <i class="fab fa-github"></i>
+                        </a>
+
+                        <a href="https://vijaydholpuria.github.io/vijay-portfolio/" target="_blank"
+                            class="social-icon portfolio">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                &copy; 2026 Resume Analyzer PRO | Developed by Vijay Dholpuria
+            </div>
+        </footer>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='reviews.js') }}"></script>
+
+</body>
+
+</html>

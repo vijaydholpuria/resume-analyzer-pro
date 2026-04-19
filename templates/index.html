@@ -12,64 +12,49 @@
         content="Resume Analyzer, AI Resume Screening, Resume Scoring, Skill Gap Analysis, Job Matching">
     <meta name="author" content="Vijay Dholpuria">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 
-    <!-- Android -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
-
-    <!-- Apple -->
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-
-    <!-- Theme color -->
-    <meta name="theme-color" content="#203a43">
-
-
+    <meta name="theme-color" content="#12202f">
 </head>
 
 <body>
 
-    <!-- ================= SIDEBAR ================= -->
     <div class="sidebar" id="sidebar">
         <div class="logo">ResumeAI</div>
         <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#analyzer">Analyzer</a></li>
+            <li><a href="#copilot">Copilot</a></li>
+            <li><a href="reviews.html">Ratings</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="reviews.html">Rating</a></li>
-
         </ul>
-
     </div>
+
     <div id="sidebarOverlay"></div>
 
-    <!-- Mobile Toggle -->
-    <div class="mobile-toggle" id="mobileToggle">☰</div>
+    <div class="mobile-toggle" id="mobileToggle">&#9776;</div>
 
-    <!-- ================= MAIN CONTENT ================= -->
     <main>
 
-        <!-- Top Bar -->
         <div class="top-bar">
-            <button id="darkToggle">🌙 Dark Mode</button>
+            <button id="darkToggle">Classic Night Mode</button>
         </div>
 
-        <!-- Background Particles -->
-        <div id="particles-js"></div>
-
-        <!-- ================= HERO ================= -->
         <section id="home" class="hero">
 
             <div class="hero-left">
                 <h1><span id="typing"></span></h1>
-                <p>Get instant resume scoring, skill gap analysis & job matching insights.</p>
+                <p>Craft a shortlist-ready resume with precise skill signals, elegant scoring, and modern hiring
+                    intelligence.</p>
                 <button onclick="document.getElementById('analyzer').scrollIntoView({behavior:'smooth'})">
                     Analyze Your Resume
                 </button>
@@ -77,15 +62,14 @@
 
             <div class="floating-card">
 
-                <h3>AI Resume Scan</h3>
+                <h3>Live Resume Scan</h3>
 
                 <div class="scan-box">
 
-                    <img src="images/vijay-resume.jpeg" class="scan-image" />
+                    <img src="images/vijay-resume.jpeg" class="scan-image" alt="Resume scan demo">
 
                     <div class="scan-line"></div>
 
-                    <!-- SCORE POP -->
                     <div class="score-pop">
                         <div class="score-circle-pop">
                             <span id="scanScore">0%</span>
@@ -96,10 +80,8 @@
 
             </div>
 
-
-
         </section>
-        <!-- Compare two resumes side by side with detailed similarity scores, skill matches and gap analysis. -->
+
         <section id="about" class="hero2">
 
             <div class="hero2-container">
@@ -108,8 +90,8 @@
                     <h1><span id="typing2"></span></h1>
 
                     <p>
-                        Upload two resumes and get a detailed comparison report
-                        with similarity scores, skill matches and more.
+                        Compare two resumes side by side with score, skill depth, and structure quality to pick the
+                        strongest profile.
                     </p>
 
                     <button onclick="goToCompare()">Compare Two Resumes</button>
@@ -127,16 +109,14 @@
                         <img src="images/resume2.png" alt="Resume 2">
                     </div>
 
-                    <!-- Scan Line -->
                     <div class="compare-scan-line"></div>
 
-                    <!-- Result Popup -->
                     <div class="compare-result">
                         <div class="result-card">
                             <h3>Comparison Result</h3>
                             <p>Resume 1: 85%</p>
                             <p>Resume 2: 78%</p>
-                            <p class="winner">Better Match: Resume 1 ✅</p>
+                            <p class="winner">Better Match: Resume 1</p>
                         </div>
                     </div>
 
@@ -146,26 +126,23 @@
 
         </section>
 
-
-        <!-- ================= FEATURES ================= -->
-        <section id="about" class="features">
+        <section class="features" id="features">
             <div class="feature-card">
-                <h3>Smart Scoring</h3>
-                <p>Advanced similarity algorithm to match resume with job description.</p>
+                <h3>Precision ATS Scoring</h3>
+                <p>Weighted matching for intent, keywords, and relevance with a transparent score model.</p>
             </div>
 
             <div class="feature-card">
-                <h3>Skill Gap Detection</h3>
-                <p>Instantly identify missing skills required for the job.</p>
+                <h3>Skill Gap Spotlight</h3>
+                <p>See exactly which missing skills are reducing your shortlisting chances.</p>
             </div>
 
             <div class="feature-card">
-                <h3>Universal Parser</h3>
-                <p>Supports PDF, DOCX & TXT resumes.</p>
+                <h3>Modern Recruiter Signals</h3>
+                <p>Track profile quality through practical hiring trends and impact-focused guidance.</p>
             </div>
         </section>
 
-        <!-- ================= ANALYZER ================= -->
         <section id="analyzer" class="card upload-section">
             <h2>Upload Resume</h2>
 
@@ -180,11 +157,10 @@
                 <p id="fileName"></p>
             </div>
 
-            <textarea id="jobdesc" placeholder="Enter Job Description"></textarea>
+            <textarea id="jobdesc" placeholder="Paste target job description here..."></textarea>
             <button onclick="analyze()">Analyze Resume</button>
         </section>
 
-        <!-- ================= LOADING OVERLAY ================= -->
         <div id="loadingOverlay" class="hidden">
             <div class="loader-container">
                 <div class="spinner"></div>
@@ -192,11 +168,10 @@
                 <div class="progress-bar">
                     <div class="progress" id="progress"></div>
                 </div>
-                <div id="successCheck" class="hidden">✔</div>
+                <div id="successCheck" class="hidden">&#10003;</div>
             </div>
         </div>
 
-        <!-- ================= RESULTS ================= -->
         <section class="card results-section">
             <h2>Analysis Result</h2>
 
@@ -215,17 +190,48 @@
                 </div>
             </div>
 
-            <p class="missing"><b>Missing Skills:</b> <span id="missing"></span></p>
+            <p class="missing"><b>Missing Skills:</b> <span id="missing">-</span></p>
             <canvas id="scoreChart"></canvas>
         </section>
 
-        <!-- ================= RANKING ================= -->
+        <section class="card insight-lab" id="copilot">
+            <div class="insight-head">
+                <h2>ATS Career Copilot</h2>
+                <p>New feature: instant 7-day execution plan from your latest score and JD context.</p>
+            </div>
+
+            <div class="insight-chip-row">
+                <span class="insight-chip" id="scoreBadge">Awaiting Scan</span>
+                <span class="insight-chip" id="shortlistChance">Shortlist chance: --</span>
+            </div>
+
+            <div class="insight-columns">
+                <article class="insight-panel">
+                    <h3>Priority Skills</h3>
+                    <ul id="prioritySkills" class="insight-list">
+                        <li>Upload resume and run analysis to unlock recommendations.</li>
+                    </ul>
+                </article>
+
+                <article class="insight-panel">
+                    <h3>Action Plan (7 Days)</h3>
+                    <ul id="actionPlan" class="insight-list">
+                        <li>Start with one target JD and tailor resume headline.</li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="trend-strip">
+                <h3>2026 Hiring Trend Radar</h3>
+                <div class="trend-tags" id="trendTags"></div>
+            </div>
+        </section>
+
         <section class="results-clean">
             <h2>Top Ranked Resumes</h2>
             <ul id="rankList"></ul>
         </section>
 
-        <!-- ================= STATS ================= -->
         <section class="stats-section">
             <div class="stat-box">
                 <h3>Total Resumes</h3>
@@ -239,29 +245,25 @@
         </section>
 
 
-        <!-- ================= CONTACT ================= -->
         <section id="contact" class="card">
             <h2>Contact Us</h2>
             <p>Email: vijay635037@gmail.com</p>
             <p>Phone: +91 7851894027</p>
         </section>
 
-        <!-- ================= Review ================= -->
-
         <section class="rating-summary" id="mainRatingSummary">
-
 
             <h2>User Rating Overview</h2>
 
             <div class="average-rating">
-                <span id="mainAverageRating">0</span> ⭐
+                <span id="mainAverageRating">0</span> &#11088;
                 (<span id="mainReviewCount">0</span> Reviews)
             </div>
 
             <div class="rating-bars">
 
                 <div class="bar-row">
-                    <span>5 ⭐</span>
+                    <span>5 &#11088;</span>
                     <div class="bar">
                         <div class="fill fill-5" id="mainBar5"></div>
                     </div>
@@ -269,7 +271,7 @@
                 </div>
 
                 <div class="bar-row">
-                    <span>4 ⭐</span>
+                    <span>4 &#11088;</span>
                     <div class="bar">
                         <div class="fill fill-4" id="mainBar4"></div>
                     </div>
@@ -277,7 +279,7 @@
                 </div>
 
                 <div class="bar-row">
-                    <span>3 ⭐</span>
+                    <span>3 &#11088;</span>
                     <div class="bar">
                         <div class="fill fill-3" id="mainBar3"></div>
                     </div>
@@ -285,7 +287,7 @@
                 </div>
 
                 <div class="bar-row">
-                    <span>2 ⭐</span>
+                    <span>2 &#11088;</span>
                     <div class="bar">
                         <div class="fill fill-2" id="mainBar2"></div>
                     </div>
@@ -293,7 +295,7 @@
                 </div>
 
                 <div class="bar-row">
-                    <span>1 ⭐</span>
+                    <span>1 &#11088;</span>
                     <div class="bar">
                         <div class="fill fill-1" id="mainBar1"></div>
                     </div>
@@ -303,13 +305,11 @@
             </div>
 
             <button onclick="window.location.href='reviews.html'">
-                ⭐ Rate & Review Us
+                Rate & Review Us
             </button>
 
         </section>
 
-
-        <!-- ================= FAQ SECTION ================= -->
         <section id="faq" class="faq-section">
             <h2>Frequently Asked Questions</h2>
 
@@ -361,14 +361,13 @@
             </div>
         </section>
 
-        <!-- ================= PREMIUM FOOTER ================= -->
         <footer class="footer-pro">
 
             <div class="footer-grid">
 
                 <div>
                     <h3>Resume Analyzer PRO</h3>
-                    <p>AI powered resume screening & ATS optimization platform.</p>
+                    <p>Premium resume screening and ATS optimization workspace.</p>
                 </div>
 
                 <div>
@@ -394,16 +393,15 @@
             </div>
 
             <div class="footer-bottom">
-                © 2026 Resume Analyzer PRO | Developed by Vijay Dholpuria
+                &copy; 2026 Resume Analyzer PRO | Developed by Vijay Dholpuria
             </div>
 
         </footer>
 
     </main>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 
